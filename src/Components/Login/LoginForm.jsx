@@ -1,35 +1,51 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { TOKEN_POST, USER_GET } from '../../api';
+import useForm from '../../Hooks/useForm';
 import Button from '../Forms/Button';
 import Input from '../Forms/Input';
 
 function LoginForm() {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const username = useForm();
+  const password = useForm();
+
+  React.useEffect(() => {
+    const token = window.localStorage.getItem('token');
+
+    if (token) {
+      getUser(token);
+    }
+  }, []);
+
+  async function getUser(token) {
+    const { url, options } = USER_GET(token);
+    const response = await fetch(url, options);
+    const json = await response.json();
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const response = await fetch(
-      'https://dogsapi.origamid.dev/json/jwt-auth/v1/token',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      },
-    );
-    const responseJson = await response.json();
-    console.log(responseJson);
+    if (username.validate() && password.validate()) {
+      const { url, options } = TOKEN_POST({
+        username: username.value,
+        password: password.value,
+      });
+
+      const response = await fetch(url, options);
+      const json = await response.json();
+
+      window.localStorage.setItem('token', json.token);
+      getUser(json.token);
+    }
   }
 
   return (
     <section>
       <h1>Login</h1>
       <form action="" onSubmit={handleSubmit}>
-        <Input label="Usuario" type="text" name="username" />
-        <Input label="Senha" type="password" name="password" />
+        <Input label="Usuario" type="text" name="username" {...username} />
+        <Input label="Senha" type="password" name="password" {...password} />
         <Button>Entrar</Button>
       </form>
       <Link to="/login/criar">Cadastro</Link>
