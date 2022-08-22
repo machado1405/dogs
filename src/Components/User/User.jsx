@@ -1,9 +1,9 @@
 import React from 'react';
 import UserHeader from './UserHeader';
 import { Routes, Route } from 'react-router-dom';
-import UserPhotoPost from '../Feed/UserPhotoPost';
 import Feed from '../Feed/Feed';
-import UserStats from '../Feed/UserStats';
+import UserStats from './UserStats';
+import UserPhotoPost from './UserPhotoPost';
 
 function user() {
   return (
