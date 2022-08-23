@@ -1,9 +1,12 @@
 import React from 'react';
+import Feed from './Feed/Feed';
 
 function Home() {
   return (
     <>
-      <p>Home</p>
+      <section className="container mainContainer">
+        <Feed />
+      </section>
     </>
   );
 }
