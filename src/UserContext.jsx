@@ -12,7 +12,7 @@ export const UserStorage = ({ children }) => {
   const navigate = useNavigate();
 
   const userLogout = React.useCallback(
-    async function () {
+    async function() {
       setData(null);
       setError(null);
       setLoading(false);
@@ -36,16 +36,9 @@ export const UserStorage = ({ children }) => {
       setError(null);
       setLoading(true);
       const { url, options } = TOKEN_POST({ username, password });
-      const response = await fetch(url, options);
-      if (!response.ok)
-        throw new Error(
-          `Erro: ${
-            response.status === 403
-              ? 'Usuário não existe'
-              : 'Falha no login, tente novamente'
-          }`,
-        );
-      const { token } = await response.json();
+      const tokenRes = await fetch(url, options);
+      if (!tokenRes.ok) throw new Error(`Error: ${tokenRes.statusText}`);
+      const { token } = await tokenRes.json();
       window.localStorage.setItem('token', token);
       await getUser(token);
       navigate('/conta');
